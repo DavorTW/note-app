@@ -1,26 +1,40 @@
 package com.example.notesapplication
 
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
-class NoteRepository(private val noteDao: NoteDao) {
-    val allNotes: LiveData<List<Note>> = noteDao.getAllNotes()
+class NoteRepository {
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
     suspend fun insert(note: Note) {
-        noteDao.insert(note)
+        try {
+            firestore.collection("notes")
+                .add(note)
+                .await()  // Ensure this is run on a background thread, suspending until completion
+        } catch (e: Exception) {
+            Log.e("NoteRepository", "Error inserting note", e)
+        }
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun update(note: Note) {
-        noteDao.update(note)
+        try {
+            firestore.collection("notes").document(note.id)
+                .set(note)
+                .await()
+        } catch (e: Exception) {
+            Log.e("NoteRepository", "Error updating note", e)
+        }
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun delete(note: Note) {
-        noteDao.delete(note)
+        try {
+            firestore.collection("notes").document(note.id)
+                .delete()
+                .await()
+        } catch (e: Exception) {
+            Log.e("NoteRepository", "Error deleting note", e)
+        }
     }
 }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     kotlin("kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -78,14 +79,6 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
-}
-
-dependencies {
-    implementation("androidx.room:room-runtime:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-}
-
-dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity)
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
@@ -95,4 +88,24 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
     implementation("com.google.android.material:material:1.2.1")
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+}
+
+
+// Firebase BOM for version management
+dependencies {
+    implementation(platform(libs.firebase.bom))
+
+    // Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Authentication (optional, for user management)
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Realtime Updates (optional, if needed)
+    implementation("com.google.firebase:firebase-database-ktx")
+
+    // For Coroutines with Firestore
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 }
